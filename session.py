@@ -61,8 +61,6 @@ class StalkerSession(object):
     self.session.headers['Authorization'] = 'Bearer ' + token
 
     self.profile = get_data(self._get_profile())
-    print self.profile
-    self.get_channels()
 
   def _handshake(self):
     payload = {
@@ -70,7 +68,7 @@ class StalkerSession(object):
       'action': 'handshake'
     }
 
-    return self.session.get(self.load_uri, params=payload)
+    return self.load(payload)
 
   def _get_profile(self):
     ver = {
@@ -102,12 +100,7 @@ class StalkerSession(object):
       'ver': ver
     }
 
-    return self.session.get(self.load_uri, params=payload)
+    return self.load(payload)
 
-  def get_channels(self):
-    # CREATE CHANNELS CLASS AND GO FROM THERE
-    payload = {
-      'type': 'itv',
-      'action': 'get_all_channels'
-    }
-    print self.session.get(self.load_uri, params= payload).json()['js']
+  def load(self, payload):
+    return self.session.get(self.load_uri, params= payload)
