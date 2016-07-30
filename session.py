@@ -103,4 +103,4 @@ class StalkerSession(object):
     return self.load(payload)
 
   def load(self, payload):
-    return self.session.get(self.load_uri, params= payload)
+    return self.session.get(self.load_uri, params=payload)
