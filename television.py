@@ -8,14 +8,6 @@ class Television(StalkerClient):
     self.genres_by_id = self.get_genres_by_id()
     self.channels_by_id = self.get_by_id(self.get_ordered_list())
 
-  def create_link(self, cmd):
-    payload = {
-      'type': 'itv',
-      'action': 'create_link',
-      'cmd': cmd
-    }
-    return self.load(payload)
-
   def get_epg(self):
     payload = {
       'type': 'itv',
@@ -23,6 +15,14 @@ class Television(StalkerClient):
       'xmltv_id': '1.30_14'
     }
     print pretty(self.load(payload).json())
+
+  def create_link(self, cmd):
+    payload = {
+      'type': 'itv',
+      'action': 'create_link',
+      'cmd': cmd
+    }
+    return self.load(payload)
 
   def get_ordered_list(self):
     payload = {

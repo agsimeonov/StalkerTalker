@@ -18,7 +18,7 @@ class Playlist(object):
     channel = self.television.channels_by_id[identifier]
     genre = self.television.genres_by_id[channel[u'tv_genre_id']]
     track = '#EXTINF:-1 tvg-id="' + identifier + '" group-title="' + genre[u'title'].title() + '",' + channel[u'name'] + '\n'
-    link = 'http://localhost:5555/tv/' + identifier + '\n'
+    link = 'http://localhost:55555/tv/' + identifier + '\n'
     return track + link
 
   def __get_sorted_ids(self, ids):
