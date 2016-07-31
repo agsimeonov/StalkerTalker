@@ -4,10 +4,11 @@ import codecs
 class Playlist(object):
   def __init__(self, television):
     self.television = television
-    channel_ids = self.__get_sorted_ids(self.television.channels_by_id)
+    number_to_id = self.__get_number_to_id(self.television.channels_by_id)
+    sorted_numbers = self.__get_sorted(number_to_id.keys())
     self.playlist = "#EXTM3U\n"
-    for identifier in channel_ids:
-      self.playlist += self.__get_tv_track(identifier)
+    for number in sorted_numbers:
+      self.playlist += self.__get_tv_track(number_to_id[number])
     self.write_playlist('/Users/asosako/Desktop/playlist.m3u8')
 
   def write_playlist(self, filepath):
@@ -21,12 +22,18 @@ class Playlist(object):
     link = 'http://localhost:55555/tv/' + identifier + '\n'
     return track + link
 
-  def __get_sorted_ids(self, ids):
+  def __get_sorted(self, elements):
     digits = []
     nondigits = []
-    for x in ids:
+    for x in elements:
       if x.isdigit():
         digits.append(int(x))
       else:
         nondigits.append(x)
     return [str(x).decode('UTF-8') for x in sorted(nondigits) + sorted(digits)]
+
+  def __get_number_to_id(self, channels_by_id):
+    result = {}
+    for key in channels_by_id.keys():
+      result[channels_by_id[key][u'number']] = key
+    return result
