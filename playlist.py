@@ -2,14 +2,12 @@ import codecs
 
 
 class Playlist(object):
-  def __init__(self, television):
+  def __init__(self, television, radio):
     self.television = television
-    number_to_id = self.__get_number_to_id(self.television.channels_by_id)
-    sorted_numbers = self.__get_sorted(number_to_id.keys())
+    self.radio = radio
     self.playlist = "#EXTM3U\n"
-    for number in sorted_numbers:
-      self.playlist += self.__get_tv_track(number_to_id[number])
-    self.write_playlist('/Users/asosako/Desktop/playlist.m3u8')
+    self.populate_playlist(self.television.channels_by_id, self.__get_tv_track)
+    self.populate_playlist(self.radio.radios_by_id, self.__get_radio_track)
 
   def write_playlist(self, filepath):
     with codecs.open(filepath, 'w', encoding='utf8') as output:
@@ -22,6 +20,18 @@ class Playlist(object):
     link = 'http://localhost:55555/tv/' + identifier + '\n'
     return track + link
 
+  def __get_radio_track(self, identifier):
+    radio = self.radio.radios_by_id[identifier]
+    track = '#EXTINF:-1 radio=true group-title="Radio",' + radio[u'name'] + '\n'
+    link = 'http://localhost:55555/radio/' + identifier + '\n'
+    return track + link
+
+  def populate_playlist(self, items_by_id, get_track_callback):
+    number_to_id = self.__get_number_to_id(items_by_id)
+    sorted_numbers = self.__get_sorted(number_to_id.keys())
+    for number in sorted_numbers:
+      self.playlist += get_track_callback(number_to_id[number])
+
   def __get_sorted(self, elements):
     digits = []
     nondigits = []
@@ -32,8 +42,8 @@ class Playlist(object):
         nondigits.append(x)
     return [str(x).decode('UTF-8') for x in sorted(nondigits) + sorted(digits)]
 
-  def __get_number_to_id(self, channels_by_id):
+  def __get_number_to_id(self, items_by_id):
     result = {}
-    for key in channels_by_id.keys():
-      result[channels_by_id[key][u'number']] = key
+    for key in items_by_id.keys():
+      result[items_by_id[key][u'number']] = key
     return result
