@@ -5,7 +5,7 @@ from urlparse import urlparse, urlunparse, urljoin
 from requests.api import get
 from requests.sessions import Session
 
-from common import get_data
+from common import get_data, pretty
 
 
 DEFAULT_HEADER = {
@@ -103,4 +103,8 @@ class StalkerSession(object):
     return self.load(payload)
 
   def load(self, payload):
-    return self.session.get(self.load_uri, params=payload)
+    try:
+      return self.session.get(self.load_uri, params=payload)
+    except Exception as exception:
+      print "Encountered an error while loading: " + pretty(payload)
+      print exception
